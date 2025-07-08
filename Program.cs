@@ -24,9 +24,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITravelRequestRepository, TravelRequestRepository>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITravelRequestService, TravelRequestService>();
 builder.Services.AddScoped<IPasswordHashingService, PasswordHashingService>();
 
 var app = builder.Build();

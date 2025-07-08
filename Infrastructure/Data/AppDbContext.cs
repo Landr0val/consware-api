@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<TravelRequest> TravelRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -48,6 +49,50 @@ public class AppDbContext : DbContext
                 .IsUnique();
 
             entity.ToTable("Users");
+        });
+
+        modelBuilder.Entity<TravelRequest>(entity =>
+        {
+            entity.HasKey(e => e.id);
+
+            entity.Property(e => e.user_id)
+                .IsRequired();
+
+            entity.Property(e => e.origin_city)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(e => e.destination_city)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(e => e.departure_date)
+                .IsRequired();
+
+            entity.Property(e => e.return_date)
+                .IsRequired();
+
+            entity.Property(e => e.justification)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            entity.Property(e => e.status)
+                .IsRequired()
+                .HasConversion<int>()
+                .HasDefaultValue(RequestStatus.Pending);
+
+            entity.Property(e => e.created_at)
+                .IsRequired();
+
+            entity.Property(e => e.updated_at)
+                .IsRequired(false);
+
+            entity.HasOne(e => e.user)
+                .WithMany(u => u.travel_requests)
+                .HasForeignKey(e => e.user_id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.ToTable("TravelRequests");
         });
 
         base.OnModelCreating(modelBuilder);

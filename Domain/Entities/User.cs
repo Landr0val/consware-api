@@ -12,4 +12,5 @@ public class User
     public DateTime created_at { get; set; }
     public DateTime? updated_at { get; set; }
     public bool active { get; set; } = true;
+    public ICollection<TravelRequest> travel_requests { get; set; } = new List<TravelRequest>();
 }
