@@ -1,6 +1,7 @@
 using consware_api.Application.DTOs;
 using consware_api.Application.Interfaces;
 using consware_api.Domain.Entities;
+using consware_api.Domain.Enums;
 using consware_api.Domain.Repositories;
 
 namespace consware_api.Application.Services;
@@ -28,9 +29,13 @@ public class UserService : IUserService
         return user == null ? null : MapToDto(user);
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllAsync()
+    public async Task<IEnumerable<UserDto>> GetAllAsync(UserRole? role = null)
     {
         var users = await _userRepository.GetAllAsync();
+        if (role.HasValue)
+        {
+            users = users.Where(u => u.role == role.Value);
+        }
         return users.Select(MapToDto);
     }
 

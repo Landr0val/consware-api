@@ -1,5 +1,6 @@
 using consware_api.Application.DTOs;
 using consware_api.Application.Interfaces;
+using consware_api.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace consware_api.Controllers;
@@ -16,9 +17,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers([FromQuery] UserRole? role = null)
     {
-        var users = await _userService.GetAllAsync();
+        var users = await _userService.GetAllAsync(role);
         return Ok(users);
     }
 
