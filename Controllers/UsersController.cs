@@ -82,4 +82,54 @@ public class UsersController : ControllerBase
         }
         return NoContent();
     }
+
+    [HttpPatch("{id}/change-password")]
+    public async Task<ActionResult> ChangePassword(int id, ChangePasswordDto changePasswordDto)
+    {
+        try
+        {
+            var result = await _userService.ChangePasswordAsync(id, changePasswordDto);
+            if (!result)
+            {
+                return BadRequest("No se pudo cambiar la contraseña");
+            }
+            return Ok(new { message = "Contraseña cambiada exitosamente" });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("request-password-reset")]
+    public async Task<ActionResult> RequestPasswordReset(PasswordResetRequestDto passwordResetRequestDto)
+    {
+        try
+        {
+            await _userService.RequestPasswordResetAsync(passwordResetRequestDto);
+            return Ok(new { message = "Si el correo existe, recibirás un enlace para restablecer tu contraseña" });
+        }
+        catch (Exception)
+        {
+            return Ok(new { message = "Si el correo existe, recibirás un enlace para restablecer tu contraseña" });
+        }
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> ResetPassword(PasswordResetDto passwordResetDto)
+    {
+        try
+        {
+            var result = await _userService.ResetPasswordAsync(passwordResetDto);
+            if (!result)
+            {
+                return BadRequest("Token inválido o expirado");
+            }
+            return Ok(new { message = "Contraseña restablecida exitosamente" });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

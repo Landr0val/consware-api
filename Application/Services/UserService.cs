@@ -83,6 +83,42 @@ public class UserService : IUserService
         return await _userRepository.DeleteAsync(id);
     }
 
+    public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto changePasswordDto)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException("Usuario no encontrado");
+        }
+
+        if (!_passwordHashingService.VerifyPassword(changePasswordDto.currentPassword, user.password))
+        {
+            throw new InvalidOperationException("La contraseña actual es incorrecta");
+        }
+
+        user.password = _passwordHashingService.HashPassword(changePasswordDto.newPassword);
+        user.updated_at = DateTime.UtcNow;
+
+        await _userRepository.UpdateAsync(user);
+        return true;
+    }
+
+    public async Task<bool> RequestPasswordResetAsync(PasswordResetRequestDto passwordResetRequestDto)
+    {
+        var user = await _userRepository.GetByEmailAsync(passwordResetRequestDto.email);
+        if (user == null)
+        {
+            return true;
+        }
+
+        return true;
+    }
+
+    public async Task<bool> ResetPasswordAsync(PasswordResetDto passwordResetDto)
+    {
+        return true;
+    }
+
     private static UserDto MapToDto(User user)
     {
         return new UserDto
