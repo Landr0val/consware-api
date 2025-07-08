@@ -1,0 +1,19 @@
+services:
+  consware-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_SERVER=${DB_SERVER:-localhost,1433}
+      - DB_DATABASE=${DB_DATABASE:-ConswareDB}
+      - DB_USER=${DB_USER:-SA}
+      - DB_PASSWORD=${DB_PASSWORD:-MyStrongPassword123!}
+      - DB_MULTIPLE_ACTIVE_RESULT_SETS=${DB_MULTIPLE_ACTIVE_RESULT_SETS:-true}
+      - DB_TRUST_SERVER_CERTIFICATE=${DB_TRUST_SERVER_CERTIFICATE:-true}
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
