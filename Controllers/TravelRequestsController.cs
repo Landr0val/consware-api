@@ -1,6 +1,7 @@
 using consware_api.Application.DTOs;
 using consware_api.Application.Interfaces;
 using consware_api.Domain.Enums;
+using consware_api.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace consware_api.Controllers;
@@ -19,6 +20,7 @@ public class TravelRequestsController : ControllerBase
     }
 
     [HttpGet]
+    [AprobadorOnly]
     public async Task<ActionResult<IEnumerable<TravelRequestDto>>> GetAllRequests()
     {
         var requests = await _travelRequestService.GetAllAsync();
@@ -26,6 +28,7 @@ public class TravelRequestsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AnyRole]
     public async Task<ActionResult<TravelRequestDto>> GetRequest(int id)
     {
         var request = await _travelRequestService.GetByIdAsync(id);
@@ -37,6 +40,7 @@ public class TravelRequestsController : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
+    [ResourceOwner("userId")]
     public async Task<ActionResult<IEnumerable<TravelRequestDto>>> GetRequestsByUser(int userId)
     {
         var requests = await _travelRequestService.GetByUserIdAsync(userId);
@@ -44,6 +48,7 @@ public class TravelRequestsController : ControllerBase
     }
 
     [HttpPost("user/{userId}")]
+    [ResourceOwner("userId")]
     public async Task<ActionResult<TravelRequestDto>> CreateRequest(int userId, CreateTravelRequestDto createTravelRequestDto)
     {
         try
@@ -58,6 +63,7 @@ public class TravelRequestsController : ControllerBase
     }
 
     [HttpPut("{id}/status")]
+    [AprobadorOnly]
     public async Task<ActionResult<TravelRequestDto>> UpdateRequestStatus(int id, UpdateRequestStatusDto updateRequestStatusDto, [FromQuery] int approverId)
     {
         try
@@ -78,6 +84,7 @@ public class TravelRequestsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [AprobadorOnly]
     public async Task<ActionResult> DeleteRequest(int id)
     {
         var result = await _travelRequestService.DeleteAsync(id);

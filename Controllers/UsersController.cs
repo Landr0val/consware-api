@@ -1,6 +1,7 @@
 using consware_api.Application.DTOs;
 using consware_api.Application.Interfaces;
 using consware_api.Domain.Enums;
+using consware_api.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace consware_api.Controllers;
@@ -17,6 +18,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    [AprobadorOnly]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers([FromQuery] UserRole? role = null)
     {
         var users = await _userService.GetAllAsync(role);
@@ -24,6 +26,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ResourceOwner("id")]
     public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -35,6 +38,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("email/{email}")]
+    [AnyRole]
     public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
     {
         var user = await _userService.GetByEmailAsync(email);
@@ -46,6 +50,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [AprobadorOnly]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto createUserDto)
     {
         try
@@ -60,6 +65,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [ResourceOwner("id")]
     public async Task<ActionResult<UserDto>> UpdateUser(int id, UpdateUserDto updateUserDto)
     {
         try
@@ -74,6 +80,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [AprobadorOnly]
     public async Task<ActionResult> DeleteUser(int id)
     {
         var result = await _userService.DeleteAsync(id);
@@ -85,6 +92,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPatch("{id}/change-password")]
+    [ResourceOwner("id")]
     public async Task<ActionResult> ChangePassword(int id, ChangePasswordDto changePasswordDto)
     {
         try
@@ -103,6 +111,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("request-password-reset")]
+    [AnyRole]
     public async Task<ActionResult> RequestPasswordReset(PasswordResetRequestDto passwordResetRequestDto)
     {
         try
@@ -117,6 +126,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("reset-password")]
+    [AnyRole]
     public async Task<ActionResult> ResetPassword(PasswordResetDto passwordResetDto)
     {
         try
