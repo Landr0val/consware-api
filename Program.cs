@@ -30,6 +30,10 @@ builder.Services.AddScoped<ITravelRequestRepository, TravelRequestRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITravelRequestService, TravelRequestService>();
 builder.Services.AddScoped<IPasswordHashingService, PasswordHashingService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+
 
 var app = builder.Build();
 

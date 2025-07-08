@@ -25,7 +25,6 @@ public class TravelRequestRepository : ITravelRequestRepository
     {
         return await _context.TravelRequests
             .Include(tr => tr.user)
-            .OrderByDescending(tr => tr.created_at)
             .ToListAsync();
     }
 
@@ -34,7 +33,6 @@ public class TravelRequestRepository : ITravelRequestRepository
         return await _context.TravelRequests
             .Include(tr => tr.user)
             .Where(tr => tr.user_id == userId)
-            .OrderByDescending(tr => tr.created_at)
             .ToListAsync();
     }
 
@@ -42,14 +40,14 @@ public class TravelRequestRepository : ITravelRequestRepository
     {
         _context.TravelRequests.Add(travelRequest);
         await _context.SaveChangesAsync();
-        return await GetByIdAsync(travelRequest.id) ?? travelRequest;
+        return travelRequest;
     }
 
     public async Task<TravelRequest> UpdateAsync(TravelRequest travelRequest)
     {
         _context.TravelRequests.Update(travelRequest);
         await _context.SaveChangesAsync();
-        return await GetByIdAsync(travelRequest.id) ?? travelRequest;
+        return travelRequest;
     }
 
     public async Task<bool> DeleteAsync(int id)

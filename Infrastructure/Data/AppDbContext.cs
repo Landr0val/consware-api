@@ -10,8 +10,8 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<TravelRequest> TravelRequests { get; set; }
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<TravelRequest> TravelRequests { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,19 +78,14 @@ public class AppDbContext : DbContext
 
             entity.Property(e => e.status)
                 .IsRequired()
-                .HasConversion<int>()
-                .HasDefaultValue(RequestStatus.Pending);
+                .HasConversion<int>();
 
             entity.Property(e => e.created_at)
                 .IsRequired();
 
-            entity.Property(e => e.updated_at)
-                .IsRequired(false);
-
             entity.HasOne(e => e.user)
                 .WithMany(u => u.travel_requests)
-                .HasForeignKey(e => e.user_id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.user_id);
 
             entity.ToTable("TravelRequests");
         });
