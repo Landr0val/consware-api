@@ -1,0 +1,15 @@
+README.md
+run-migrations.ps1
+run-migrations.sh
+SETUP-INSTRUCTIONS.md
+users-api-test.http
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+bin/
+obj/
+Migrations/
